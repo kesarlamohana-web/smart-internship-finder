@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Internships</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .card { border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h2>All Internships</h2>
+  <p>
+    <a href="/profile">Profile</a> |
+    <a href="/recommendations">My Recommendations</a> |
+    <a href="/logout">Logout</a>
+  </p>
+
+  <form method="GET">
+    <input type="text" name="location" placeholder="Filter by location" value="{{ location }}">
+    <button type="submit">Filter</button>
+  </form>
+  <br>
+
+  {% for i in internships %}
+    <div class="card">
+      <h3>{{ i['title'] }} - {{ i['company'] }}</h3>
+      <p>Skills required: {{ i['required_skills'] }}</p>
+      <p>Location: {{ i['location'] }} | Duration: {{ i['duration'] }} | Stipend: {{ i['stipend'] }}</p>
+      <p>Deadline: {{ i['deadline'] }}</p>
+      <p><a href="{{ i['apply_link'] }}" target="_blank">Apply</a></p>
+    </div>
+  {% else %}
+    <p>No internships found.</p>
+  {% endfor %}
+</body>
+</html>

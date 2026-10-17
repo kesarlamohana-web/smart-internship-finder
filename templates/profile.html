@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile</title>
+</head>
+<body>
+  <h2>Welcome, {{ student['name'] }}</h2>
+
+  {% if saved %}
+    <p style="color:green">Profile saved successfully!</p>
+  {% endif %}
+
+  <form method="POST">
+    <label>Your Skills (comma-separated, e.g. Python,SQL,HTML):</label><br>
+    <input type="text" name="skills" value="{{ student['skills'] or '' }}" style="width:400px"><br><br>
+
+    <label>Preferred Location:</label><br>
+    <input type="text" name="location" value="{{ student['location'] or '' }}"><br><br>
+
+    <button type="submit">Save Profile</button>
+  </form>
+
+  <p>
+    <a href="/recommendations">View my recommended internships</a> |
+    <a href="/internships">All internships</a>
+  </p>
+  <p><a href="/logout">Logout</a></p>
+</body>
+</html>

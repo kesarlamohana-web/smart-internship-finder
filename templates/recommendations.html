@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Recommendations</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .card { border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 6px; }
+    .badge { background: #2e7d32; color: white; padding: 3px 8px; border-radius: 4px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h2>Recommended Internships for {{ student['name'] }}</h2>
+  <p>
+    <a href="/profile">Profile</a> |
+    <a href="/internships">All Internships</a> |
+    <a href="/logout">Logout</a>
+  </p>
+
+  {% if not student['skills'] %}
+    <p style="color:red">Please add your skills in your profile first.</p>
+  {% endif %}
+
+  {% for r in results %}
+    <div class="card">
+      <h3>{{ r.internship['title'] }} - {{ r.internship['company'] }}
+        <span class="badge">{{ r.percent }}% match</span>
+      </h3>
+      <p>Location: {{ r.internship['location'] }} | Duration: {{ r.internship['duration'] }} | Stipend: {{ r.internship['stipend'] }}</p>
+      <p>Your matching skills: {% if r.matched %}{{ r.matched | join(', ') }}{% else %}None{% endif %}</p>
+      <p>Skills to learn: {% if r.missing %}{{ r.missing | join(', ') }}{% else %}None, you are fully qualified!{% endif %}</p>
+      <p><a href="{{ r.internship['apply_link'] }}" target="_blank">Apply</a></p>
+    </div>
+  {% endfor %}
+</body>
+</html>
