@@ -129,5 +129,33 @@ def recommendations():
     results.sort(key=lambda r: r["percent"], reverse=True)
     return render_template("recommendations.html", results=results, student=student)
 
+@app.route("/admin", methods=["GET", "POST"])
+def admin():
+    if "student_id" not in session:
+        return redirect(url_for('login'))
+
+    message = None
+    conn = get_db()
+    if request.method == "POST":
+        conn.execute(
+            "INSERT INTO internships (title, company, required_skills, location, duration, stipend, deadline, apply_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                request.form["title"],
+                request.form["company"],
+                request.form["required_skills"],
+                request.form["location"],
+                request.form["duration"],
+                request.form["stipend"],
+                request.form["deadline"],
+                request.form["apply_link"],
+            )
+        )
+        conn.commit()
+        message = "Internship added successfully!"
+
+    rows = conn.execute("SELECT * FROM internships ORDER BY id DESC").fetchall()
+    conn.close()
+    return render_template("admin.html", internships=rows, message=message)
+
 if __name__ == "__main__":
     app.run(debug=True)
