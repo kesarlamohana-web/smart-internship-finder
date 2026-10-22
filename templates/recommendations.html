@@ -1,35 +1,550 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Recommendations</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Recommendations | Smart Internship Finder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .card { border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 6px; }
-    .badge { background: #2e7d32; color: white; padding: 3px 8px; border-radius: 4px; font-size: 14px; }
+    :root {
+      --navy: #142b3b;
+      --navy-light: #203f52;
+      --gold: #c8a66a;
+      --ivory: #f8f6f0;
+      --white: #ffffff;
+      --text: #263746;
+      --muted: #7b8790;
+      --border: #e7e5de;
+      --green: #287653;
+      --green-bg: #edf7f0;
+      --orange: #9a6325;
+      --orange-bg: #fff5e8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .navbar {
+      background: var(--navy);
+      padding: 19px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #e4e9ec;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: 38px 7% 70px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(29px, 4vw, 42px);
+      font-weight: 600;
+      margin: 13px 0;
+    }
+
+    .hero p {
+      color: #cbd5db;
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 600px;
+      margin: 0;
+    }
+
+    .main {
+      width: min(1050px, 90%);
+      margin: -35px auto 60px;
+      position: relative;
+    }
+
+    .notice {
+      background: #fff5f1;
+      border: 1px solid #f0d5c9;
+      color: #a04432;
+      border-radius: 10px;
+      padding: 17px 20px;
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 0 0 20px;
+    }
+
+    .results-heading h2 {
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      font-size: 25px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+
+    .results-heading p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .result-count {
+      color: #876a36;
+      background: #f0e7d5;
+      border-radius: 30px;
+      padding: 8px 13px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 25px;
+      margin-bottom: 18px;
+      box-shadow: 0 7px 22px rgba(20, 43, 59, 0.04);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(20, 43, 59, 0.08);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .job-title {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 7px;
+    }
+
+    .company {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .badge {
+      flex-shrink: 0;
+      background: var(--green-bg);
+      border: 1px solid #cce6d5;
+      color: var(--green);
+      padding: 9px 13px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .match-section {
+      background: #faf9f5;
+      padding: 16px;
+      border-radius: 9px;
+      margin-bottom: 20px;
+    }
+
+    .match-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: #e5e5df;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 20px;
+    }
+
+    .details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .detail {
+      background: #f6f7f6;
+      border: 1px solid #eceeeb;
+      border-radius: 7px;
+      padding: 10px 13px;
+      font-size: 12px;
+      color: #475966;
+    }
+
+    .detail strong {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 23px;
+    }
+
+    .skill-box {
+      padding: 16px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      min-width: 0;
+    }
+
+    .skill-box h3 {
+      font-size: 12px;
+      margin: 0 0 10px;
+    }
+
+    .matched-box {
+      background: #f3faf5;
+      border-color: #d8eadc;
+    }
+
+    .matched-box h3 {
+      color: var(--green);
+    }
+
+    .missing-box {
+      background: #fff9f0;
+      border-color: #f0e2cb;
+    }
+
+    .missing-box h3 {
+      color: var(--orange);
+    }
+
+    .skill-text {
+      color: #53636c;
+      font-size: 12px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .apply-row {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .apply-button {
+      display: inline-block;
+      background: var(--navy);
+      color: white;
+      text-decoration: none;
+      border-radius: 7px;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+
+    .apply-button:hover {
+      background: var(--navy-light);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 45px 25px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .empty-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state h2 {
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin: 0 0 10px;
+    }
+
+    .empty-state p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      max-width: 450px;
+      margin: 0 auto 20px;
+    }
+
+    .secondary-link {
+      display: inline-block;
+      color: var(--navy);
+      border: 1px solid var(--gold);
+      border-radius: 7px;
+      padding: 11px 17px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .secondary-link:hover {
+      background: #f8f1e5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 18px 5%;
+      }
+
+      .nav-links {
+        gap: 13px;
+      }
+
+      .hero {
+        padding: 30px 5% 60px;
+      }
+
+      .main {
+        width: 92%;
+      }
+
+      .card {
+        padding: 19px;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .job-title {
+        font-size: 20px;
+      }
+
+      .apply-row {
+        justify-content: stretch;
+      }
+
+      .apply-button {
+        text-align: center;
+        width: 100%;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <h2>Recommended Internships for {{ student['name'] }}</h2>
-  <p>
-    <a href="/profile">Profile</a> |
-    <a href="/internships">All Internships</a> |
-    <a href="/logout">Logout</a>
-  </p>
 
-  {% if not student['skills'] %}
-    <p style="color:red">Please add your skills in your profile first.</p>
-  {% endif %}
+  <nav class="navbar">
+    <div class="brand">Smart <span>Internship</span> Finder</div>
 
-  {% for r in results %}
-    <div class="card">
-      <h3>{{ r.internship['title'] }} - {{ r.internship['company'] }}
-        <span class="badge">{{ r.percent }}% match</span>
-      </h3>
-      <p>Location: {{ r.internship['location'] }} | Duration: {{ r.internship['duration'] }} | Stipend: {{ r.internship['stipend'] }}</p>
-      <p>Your matching skills: {% if r.matched %}{{ r.matched | join(', ') }}{% else %}None{% endif %}</p>
-      <p>Skills to learn: {% if r.missing %}{{ r.missing | join(', ') }}{% else %}None, you are fully qualified!{% endif %}</p>
-      <p><a href="{{ r.internship['apply_link'] }}" target="_blank">Apply</a></p>
+    <div class="nav-links">
+      <a href="/profile">My Profile</a>
+      <a href="/recommendations">Recommendations</a>
+      <a href="/internships">All Internships</a>
+      <a href="/logout">Logout</a>
     </div>
-  {% endfor %}
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow">Curated for your career</div>
+    <h1>Opportunities for {{ student['name'] }}</h1>
+    <p>
+      Discover internships that align with your skills. See where you match,
+      identify what you can learn next, and take the next step in your career.
+    </p>
+  </header>
+
+  <main class="main">
+
+    {% if not student['skills'] %}
+      <div class="notice">
+        <strong>Your profile needs a little attention.</strong><br>
+        Add your skills to your profile to help identify suitable internship
+        opportunities.
+        <br><br>
+        <a href="/profile">Update my profile →</a>
+      </div>
+    {% endif %}
+
+    <div class="results-heading">
+      <div>
+        <h2>Your Recommendations</h2>
+        <p>Review your match percentage and skill requirements.</p>
+      </div>
+      <span class="result-count">Personalized matches</span>
+    </div>
+
+    {% for r in results %}
+      <article class="card">
+
+        <div class="card-top">
+          <div>
+            <h2 class="job-title">{{ r.internship['title'] }}</h2>
+            <p class="company">{{ r.internship['company'] }}</p>
+          </div>
+
+          <span class="badge">{{ r.percent }}% match</span>
+        </div>
+
+        <div class="match-section">
+          <div class="match-label">
+            <span>Skill match</span>
+            <span>{{ r.percent }}%</span>
+          </div>
+
+          <div class="progress-track">
+            <div
+              class="progress-fill"
+              style="width: {{ [[r.percent | float, 0] | max, 100] | min }}%;"
+            ></div>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="detail">
+            <strong>Location:</strong> {{ r.internship['location'] }}
+          </div>
+          <div class="detail">
+            <strong>Duration:</strong> {{ r.internship['duration'] }}
+          </div>
+          <div class="detail">
+            <strong>Stipend:</strong> {{ r.internship['stipend'] }}
+          </div>
+        </div>
+
+        <div class="skills-grid">
+          <div class="skill-box matched-box">
+            <h3>✓ Your Matching Skills</h3>
+            <div class="skill-text">
+              {% if r.matched %}
+                {{ r.matched | join(', ') }}
+              {% else %}
+                No matching skills identified yet.
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="skill-box missing-box">
+            <h3>↗ Skills to Develop</h3>
+            <div class="skill-text">
+              {% if r.missing %}
+                {{ r.missing | join(', ') }}
+              {% else %}
+                None identified — you match all listed skills!
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="apply-row">
+          <a
+            class="apply-button"
+            href="{{ r.internship['apply_link'] }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View & Apply →
+          </a>
+        </div>
+
+      </article>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">✦</div>
+        <h2>No recommendations yet</h2>
+        <p>
+          There are no matching results to display right now. Update your
+          profile skills or explore all available internships.
+        </p>
+        <a class="secondary-link" href="/profile">Update My Skills</a>
+        &nbsp;
+        <a class="secondary-link" href="/internships">Browse Internships</a>
+      </div>
+    {% endfor %}
+
+  </main>
+
+  <footer>
+    Smart Internship Finder · Find opportunities. Build your future.
+  </footer>
+
 </body>
 </html>

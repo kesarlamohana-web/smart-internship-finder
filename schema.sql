@@ -5,7 +5,8 @@ CREATE TABLE students (
     password TEXT NOT NULL,
     branch TEXT,
     skills TEXT,
-    location TEXT
+    location TEXT,
+    role TEXT NOT NULL DEFAULT 'student'
 );
 
 CREATE TABLE internships (

@@ -1,36 +1,654 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>All Internships</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Internships | Smart Internship Finder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .card { border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 6px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #17243b;
+      --navy-light: #304762;
+      --gold: #b9975b;
+      --gold-light: #e1c18a;
+      --cream: #f7f5f0;
+      --text: #26344a;
+      --muted: #778195;
+      --border: #e7e8eb;
+      --white: #ffffff;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 17px 7%;
+      background: rgba(255, 255, 255, 0.97);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 3px 16px rgba(23, 36, 59, 0.03);
+    }
+
+    .brand {
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #596579;
+      font-size: 13px;
+      font-weight: 600;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--gold);
+    }
+
+    .nav-links .logout {
+      padding: 9px 16px;
+      border: 1px solid #e2d6c1;
+      border-radius: 8px;
+      color: var(--navy);
+    }
+
+    .nav-links .logout:hover {
+      background: #f7f1e7;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 65px 7% 60px;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(225,193,138,.17), transparent 28%),
+        linear-gradient(120deg, #17243b, #263b57);
+      color: var(--white);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      right: -100px;
+      bottom: -210px;
+      border: 1px solid rgba(225,193,138,.25);
+      border-radius: 50%;
+      box-shadow: 0 0 0 30px rgba(225,193,138,.04),
+                  0 0 0 60px rgba(225,193,138,.03);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 750px;
+    }
+
+    .eyebrow {
+      margin-bottom: 14px;
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      margin-bottom: 15px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(34px, 5vw, 48px);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .hero h1 span {
+      color: var(--gold-light);
+    }
+
+    .hero p {
+      max-width: 560px;
+      color: #d5dce7;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .hero-line {
+      width: 60px;
+      height: 3px;
+      margin-top: 25px;
+      border-radius: 4px;
+      background: var(--gold-light);
+    }
+
+    .container {
+      width: 86%;
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 35px 0 65px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 15px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .section-heading h2 {
+      color: var(--navy);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .section-heading p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .search-panel {
+      display: flex;
+      align-items: end;
+      gap: 14px;
+      padding: 22px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--white);
+      box-shadow: 0 8px 28px rgba(23,36,59,.04);
+    }
+
+    .search-field {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-field label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .search-field input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #dfe3e9;
+      border-radius: 9px;
+      outline: none;
+      background: #fbfcfe;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .search-field input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(185,151,91,.12);
+    }
+
+    .search-field input::placeholder {
+      color: #a0a8b6;
+    }
+
+    .filter-button {
+      min-height: 43px;
+      padding: 0 24px;
+      border: none;
+      border-radius: 9px;
+      background: var(--navy);
+      color: var(--white);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    .filter-button:hover {
+      transform: translateY(-1px);
+      background: var(--navy-light);
+    }
+
+    .results-label {
+      margin-bottom: 17px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .internship-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--white);
+      box-shadow: 0 5px 20px rgba(23,36,59,.035);
+      transition: transform .22s, box-shadow .22s, border-color .22s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #d9c8a7;
+      box-shadow: 0 14px 32px rgba(23,36,59,.09);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 19px;
+    }
+
+    .company-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border: 1px solid #eee3d0;
+      border-radius: 12px;
+      background: #f8f3e9;
+      color: var(--navy);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .job-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .job-heading h3 {
+      margin-bottom: 3px;
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .company-name {
+      color: var(--muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .gold-divider {
+      width: 38px;
+      height: 2px;
+      margin-bottom: 18px;
+      border-radius: 3px;
+      background: var(--gold);
+    }
+
+    .details {
+      display: grid;
+      gap: 13px;
+      margin-bottom: 22px;
+    }
+
+    .detail-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #929baa;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .detail-value {
+      color: #344158;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      border-top: 1px solid #edf0f3;
+      border-bottom: 1px solid #edf0f3;
+    }
+
+    .apply-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: auto;
+      padding: 12px 18px;
+      border-radius: 9px;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      transition: background .2s;
+    }
+
+    .apply-button:hover {
+      background: var(--navy-light);
+    }
+
+    .empty-state {
+      padding: 55px 24px;
+      border: 1px dashed #d8dce3;
+      border-radius: 15px;
+      background: var(--white);
+      text-align: center;
+    }
+
+    .empty-icon {
+      margin-bottom: 15px;
+      color: var(--gold);
+      font-size: 38px;
+    }
+
+    .empty-state h3 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+    }
+
+    .empty-state p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer {
+      padding: 25px 7%;
+      border-top: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .footer span {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    @media (max-width: 850px) {
+      .navbar {
+        padding: 16px 5%;
+      }
+
+      .nav-links {
+        gap: 15px;
+      }
+
+      .container {
+        width: 90%;
+      }
+
+      .internship-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        width: 100%;
+        gap: 12px 18px;
+      }
+
+      .hero {
+        padding: 45px 6%;
+      }
+
+      .container {
+        width: 92%;
+        padding-top: 28px;
+      }
+
+      .search-panel {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 17px;
+      }
+
+      .filter-button {
+        width: 100%;
+      }
+
+      .card {
+        padding: 19px;
+      }
+
+      .section-heading h2 {
+        font-size: 25px;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <h2>All Internships</h2>
-  <p>
-    <a href="/profile">Profile</a> |
-    <a href="/recommendations">My Recommendations</a> |
-    <a href="/logout">Logout</a>
-  </p>
 
-  <form method="GET">
-    <input type="text" name="location" placeholder="Filter by location" value="{{ location }}">
-    <button type="submit">Filter</button>
-  </form>
-  <br>
+  <header class="navbar">
+    <a href="/internships" class="brand">
+      Smart<span>.</span> Internship Finder
+    </a>
 
-  {% for i in internships %}
-    <div class="card">
-      <h3>{{ i['title'] }} - {{ i['company'] }}</h3>
-      <p>Skills required: {{ i['required_skills'] }}</p>
-      <p>Location: {{ i['location'] }} | Duration: {{ i['duration'] }} | Stipend: {{ i['stipend'] }}</p>
-      <p>Deadline: {{ i['deadline'] }}</p>
-      <p><a href="{{ i['apply_link'] }}" target="_blank">Apply</a></p>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="/internships" class="active">Internships</a>
+      <a href="/profile">Profile</a>
+      <a href="/recommendations">My Recommendations</a>
+      <a href="/logout" class="logout">Logout ↗</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">Explore. Learn. Grow.</div>
+      <h1>Find opportunities.<br><span>Build your future.</span></h1>
+      <p>
+        Explore internships, discover new skills, and take a
+        confident step towards your career. Your next opportunity
+        could be closer than you think.
+      </p>
+      <div class="hero-line"></div>
     </div>
-  {% else %}
-    <p>No internships found.</p>
-  {% endfor %}
+  </section>
+
+  <main class="container">
+
+    <div class="section-heading">
+      <div>
+        <h2>Explore internships</h2>
+        <p>Discover opportunities that match your ambitions.</p>
+      </div>
+    </div>
+<form class="search-panel" method="GET">
+    <div class="search-field">
+        <label for="title">Internship role</label>
+        <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="e.g. Python Developer"
+            value="{{ title }}"
+        >
+    </div>
+
+    <div class="search-field">
+        <label for="location">Preferred location</label>
+        <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="e.g. Hyderabad, Remote"
+            value="{{ location }}"
+        >
+    </div>
+
+    <div class="search-field">
+        <label for="skills">Required skill</label>
+        <input
+            type="text"
+            id="skills"
+            name="skills"
+            placeholder="e.g. Python, SQL"
+            value="{{ skills }}"
+        >
+    </div>
+
+    <div class="search-actions">
+        <button class="filter-button" type="submit">
+            Find internships →
+        </button>
+
+        <a href="/internships" class="filter-button clear-button">
+            Clear filters
+        </a>
+    </div>
+</form>
+
+    <p class="results-label">
+      Opportunities matching your search
+    </p>
+
+    {% if internships %}
+      <div class="internship-grid">
+        {% for i in internships %}
+          <article class="card">
+
+            <div class="card-top">
+              <div class="company-icon" aria-hidden="true">
+                {{ i['company'][0] if i['company'] else 'I' }}
+              </div>
+
+              <div class="job-heading">
+                <h3>{{ i['title'] }}</h3>
+                <p class="company-name">{{ i['company'] }}</p>
+              </div>
+            </div>
+
+            <div class="gold-divider"></div>
+
+            <div class="details">
+              <div>
+                <span class="detail-label">Skills required</span>
+                <p class="detail-value">{{ i['required_skills'] }}</p>
+              </div>
+            </div>
+
+            <div class="meta-grid">
+              <div>
+                <span class="detail-label">Location</span>
+                <p class="detail-value">⌖ {{ i['location'] }}</p>
+              </div>
+
+              <div>
+                <span class="detail-label">Duration</span>
+                <p class="detail-value">{{ i['duration'] }}</p>
+              </div>
+
+              <div>
+                <span class="detail-label">Stipend</span>
+                <p class="detail-value">{{ i['stipend'] }}</p>
+              </div>
+
+              <div>
+                <span class="detail-label">Deadline</span>
+                <p class="detail-value">{{ i['deadline'] }}</p>
+              </div>
+            </div>
+
+            <a
+              class="apply-button"
+              href="{{ i['apply_link'] }}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Find Opportunities↗
+            </a>
+
+          </article>
+        {% endfor %}
+      </div>
+
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">✦</div>
+        <h3>No internships found</h3>
+        <p>
+          Try another location or clear your location filter
+          to explore more opportunities.
+        </p>
+      </div>
+    {% endif %}
+
+  </main>
+
+  <footer class="footer">
+    <span>Smart.</span> Internship Finder · Discover your next chapter.
+  </footer>
+
 </body>
 </html>

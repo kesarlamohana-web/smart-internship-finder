@@ -9,7 +9,25 @@ def get_db():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+def add_role_column():
+    conn = get_db()
 
+    columns = conn.execute(
+        "PRAGMA table_info(students)"
+    ).fetchall()
+
+    column_names = [column["name"] for column in columns]
+
+    if "role" not in column_names:
+        conn.execute(
+            "ALTER TABLE students ADD COLUMN role TEXT NOT NULL DEFAULT 'student'"
+        )
+        conn.commit()
+
+    conn.close()
+
+
+add_role_column()
 @app.route("/")
 def home():
     return redirect(url_for('login'))
@@ -40,22 +58,63 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form["email"]
+        email = request.form["email"].strip()
         password = request.form["password"]
 
         conn = get_db()
-        student = conn.execute("SELECT * FROM students WHERE email = ?", (email,)).fetchone()
+        student = conn.execute(
+            "SELECT * FROM students WHERE email = ?",
+            (email,)
+        ).fetchone()
         conn.close()
 
         if student and check_password_hash(student["password"], password):
+            session.clear()
             session["student_id"] = student["id"]
             session["student_name"] = student["name"]
-            return redirect(url_for('profile'))
-        else:
-            return render_template("login.html", error="Invalid email or password")
+            session["role"] = student["role"]
+
+            return redirect(url_for("profile"))
+
+        return render_template(
+            "login.html",
+            error="Invalid email or password"
+        )
 
     return render_template("login.html")
+@app.route("/admin-login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        email = request.form["email"].strip()
+        password = request.form["password"]
 
+        conn = get_db()
+        student = conn.execute(
+            "SELECT * FROM students WHERE email = ?",
+            (email,)
+        ).fetchone()
+        conn.close()
+
+        if student and check_password_hash(student["password"], password):
+            if student["role"] != "admin":
+                return render_template(
+                    "admin_login.html",
+                    error="This account is not authorized for admin access."
+                )
+
+            session.clear()
+            session["student_id"] = student["id"]
+            session["student_name"] = student["name"]
+            session["role"] = student["role"]
+
+            return redirect(url_for("admin"))
+
+        return render_template(
+            "admin_login.html",
+            error="Invalid email or password."
+        )
+
+    return render_template("admin_login.html")
 @app.route("/logout")
 def logout():
     session.clear()
@@ -87,58 +146,63 @@ def internship_list():
     if "student_id" not in session:
         return redirect(url_for('login'))
 
+    title = request.args.get("title", "").strip()
     location = request.args.get("location", "").strip()
-    conn = get_db()
+    skills = request.args.get("skills", "").strip()
+
+    query = "SELECT * FROM internships WHERE 1=1"
+    params = []
+
+    if title:
+        query += " AND title LIKE ?"
+        params.append("%" + title + "%")
+
     if location:
-        rows = conn.execute(
-            "SELECT * FROM internships WHERE location LIKE ?",
-            ("%" + location + "%",)
-        ).fetchall()
-    else:
-        rows = conn.execute("SELECT * FROM internships").fetchall()
-    conn.close()
-    return render_template("internships.html", internships=rows, location=location)
+        query += " AND location LIKE ?"
+        params.append("%" + location + "%")
 
-@app.route("/recommendations")
-def recommendations():
-    if "student_id" not in session:
-        return redirect(url_for('login'))
+    if skills:
+        query += " AND required_skills LIKE ?"
+        params.append("%" + skills + "%")
 
     conn = get_db()
-    student = conn.execute("SELECT * FROM students WHERE id = ?", (session["student_id"],)).fetchone()
-    rows = conn.execute("SELECT * FROM internships").fetchall()
+    rows = conn.execute(query, params).fetchall()
     conn.close()
 
-    my_skills = set(s.strip().lower() for s in (student["skills"] or "").split(",") if s.strip())
-
-    results = []
-    for item in rows:
-        required = [s.strip() for s in (item["required_skills"] or "").split(",") if s.strip()]
-        if not required:
-            continue
-        matched = [s for s in required if s.lower() in my_skills]
-        missing = [s for s in required if s.lower() not in my_skills]
-        percent = round(len(matched) / len(required) * 100)
-        results.append({
-            "internship": item,
-            "percent": percent,
-            "matched": matched,
-            "missing": missing
-        })
-
-    results.sort(key=lambda r: r["percent"], reverse=True)
-    return render_template("recommendations.html", results=results, student=student)
-
+    return render_template(
+        "internships.html",
+        internships=rows,
+        title=title,
+        location=location,
+        skills=skills
+    )
+ 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if "student_id" not in session:
         return redirect(url_for('login'))
+    if session.get("role") != "admin":
+        return "Access denied: Admins only.", 403   
+           
 
     message = None
     conn = get_db()
+
     if request.method == "POST":
         conn.execute(
-            "INSERT INTO internships (title, company, required_skills, location, duration, stipend, deadline, apply_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            """
+            INSERT INTO internships (
+                title,
+                company,
+                required_skills,
+                location,
+                duration,
+                stipend,
+                deadline,
+                apply_link
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
             (
                 request.form["title"],
                 request.form["company"],
@@ -150,12 +214,89 @@ def admin():
                 request.form["apply_link"],
             )
         )
+
         conn.commit()
         message = "Internship added successfully!"
 
-    rows = conn.execute("SELECT * FROM internships ORDER BY id DESC").fetchall()
-    conn.close()
-    return render_template("admin.html", internships=rows, message=message)
+    rows = conn.execute(
+        "SELECT * FROM internships ORDER BY id DESC"
+    ).fetchall()
 
+    conn.close()
+
+    return render_template(
+        "admin.html",
+        internships=rows,
+        message=message
+    )
+@app.route("/recommendations")
+def recommendations():
+    if "student_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    student = conn.execute(
+        "SELECT * FROM students WHERE id = ?",
+        (session["student_id"],)
+    ).fetchone()
+
+    internships = conn.execute(
+        "SELECT * FROM internships"
+    ).fetchall()
+
+    conn.close()
+
+    if student is None:
+        session.clear()
+        return redirect(url_for("login"))
+
+    my_skills = {
+        skill.strip().lower()
+        for skill in (student["skills"] or "").split(",")
+        if skill.strip()
+    }
+
+    results = []
+
+    for internship in internships:
+        required = [
+            skill.strip()
+            for skill in (internship["required_skills"] or "").split(",")
+            if skill.strip()
+        ]
+
+        if not required:
+            continue
+
+        matched = [
+            skill for skill in required
+            if skill.lower() in my_skills
+        ]
+
+        missing = [
+            skill for skill in required
+            if skill.lower() not in my_skills
+        ]
+
+        percent = round(len(matched) / len(required) * 100)
+
+        results.append({
+            "internship": internship,
+            "percent": percent,
+            "matched": matched,
+            "missing": missing
+        })
+
+    results.sort(
+        key=lambda item: item["percent"],
+        reverse=True
+    )
+
+    return render_template(
+        "recommendations.html",
+        results=results,
+        student=student
+    )
 if __name__ == "__main__":
     app.run(debug=True)

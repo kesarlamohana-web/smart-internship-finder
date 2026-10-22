@@ -1,30 +1,436 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Profile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | Smart Internship Finder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #142b3b;
+      --navy-light: #203f52;
+      --gold: #c8a66a;
+      --ivory: #f8f6f0;
+      --white: #ffffff;
+      --text: #263746;
+      --muted: #7b8790;
+      --border: #e7e5de;
+      --green: #287653;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--ivory);
+    }
+
+    .navbar {
+      min-height: 76px;
+      padding: 18px 7%;
+      background: var(--navy);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      color: white;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #e4e9ec;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: 38px 7% 65px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(30px, 4vw, 43px);
+      font-weight: 600;
+      margin: 12px 0;
+    }
+
+    .hero p {
+      color: #cbd5db;
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 540px;
+      margin: 0;
+    }
+
+    .main {
+      width: min(780px, 90%);
+      margin: -30px auto 60px;
+      position: relative;
+    }
+
+    .profile-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(22px, 5vw, 42px);
+      box-shadow: 0 12px 35px rgba(20, 43, 59, 0.07);
+    }
+
+    .card-heading {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      padding-bottom: 25px;
+      margin-bottom: 27px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--gold);
+      display: grid;
+      place-items: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 25px;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin: 0 0 5px;
+      color: var(--navy);
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .success {
+      padding: 13px 15px;
+      border-radius: 8px;
+      background: #edf7f0;
+      border: 1px solid #d1e8d8;
+      color: var(--green);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .section-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 0 0 22px;
+    }
+
+    .field {
+      margin-bottom: 23px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 9px;
+      color: #344956;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 15px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: #fdfdfb;
+      border: 1px solid #dcdedb;
+      border-radius: 7px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(200, 166, 106, 0.15);
+    }
+
+    .hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .save-button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 7px;
+      background: var(--navy);
+      color: white;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .save-button:hover {
+      background: var(--navy-light);
+      transform: translateY(-1px);
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+      margin-top: 22px;
+    }
+
+    .quick-link {
+      display: block;
+      padding: 19px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 10px;
+      color: var(--navy);
+      text-decoration: none;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .quick-link:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .quick-link strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .quick-link span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .admin-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #876a36;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .admin-link:hover {
+      text-decoration: underline;
+    }
+
+    .logout-row {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .logout-row a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .logout-row a:hover {
+      color: var(--navy);
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 18px 5%;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .hero {
+        padding: 30px 5% 55px;
+      }
+
+      .main {
+        width: 92%;
+      }
+
+      .quick-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h2>Welcome, {{ student['name'] }}</h2>
 
-  {% if saved %}
-    <p style="color:green">Profile saved successfully!</p>
-  {% endif %}
+  <nav class="navbar">
+    <div class="brand">Smart <span>Internship</span> Finder</div>
 
-  <form method="POST">
-    <label>Your Skills (comma-separated, e.g. Python,SQL,HTML):</label><br>
-    <input type="text" name="skills" value="{{ student['skills'] or '' }}" style="width:400px"><br><br>
+    <div class="nav-links">
+      <a href="/profile">My Profile</a>
+      <a href="/recommendations">Recommendations</a>
+      <a href="/internships">All Internships</a>
+    </div>
+  </nav>
 
-    <label>Preferred Location:</label><br>
-    <input type="text" name="location" value="{{ student['location'] or '' }}"><br><br>
+  <header class="hero">
+    <div class="eyebrow">Your career workspace</div>
+    <h1>Welcome, {{ student['name'] }}</h1>
+    <p>
+      Build your professional profile, highlight your skills, and discover
+      internship opportunities that match your interests.
+    </p>
+  </header>
 
-    <button type="submit">Save Profile</button>
-  </form>
+  <main class="main">
 
-  <p>
-    <a href="/recommendations">View my recommended internships</a>|
-    <a href="/internships">All internships</a>
-  </p>
-       <p><a href="/admin">Admin: add internship</a></p>
-  <p><a href="/logout">Logout</a></p>
+    <section class="profile-card">
+      <div class="card-heading">
+        <div class="avatar">
+          {{ student['name'][0] if student['name'] else 'S' }}
+        </div>
+
+        <div>
+          <h2>My Profile</h2>
+          <p class="subtext">Keep your skills and preferences up to date.</p>
+        </div>
+      </div>
+
+      {% if saved %}
+        <div class="success">
+          ✓ Profile saved successfully!
+        </div>
+      {% endif %}
+
+      <div class="section-title">Career preferences</div>
+      <p class="section-description">
+        Tell us what you know and where you would prefer to work.
+        This information can help personalize your internship recommendations.
+      </p>
+
+      <form method="POST">
+        <div class="field">
+          <label for="skills">Your Skills</label>
+          <input
+            type="text"
+            id="skills"
+            name="skills"
+            value="{{ student['skills'] or '' }}"
+            placeholder="e.g. Python, SQL, HTML, Java"
+          >
+          <div class="hint">
+            Separate each skill with a comma so your skills are easy to identify.
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="location">Preferred Location</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            value="{{ student['location'] or '' }}"
+            placeholder="e.g. Hyderabad, Bengaluru, Remote"
+          >
+          <div class="hint">
+            Enter a city or write “Remote” if you prefer remote opportunities.
+          </div>
+        </div>
+
+        <button class="save-button" type="submit">
+          Save Profile →
+        </button>
+      </form>
+
+      
+    </section>
+
+    <section class="quick-links">
+      <a class="quick-link" href="/recommendations">
+        <strong>My Recommendations →</strong>
+        <span>Explore internships recommended for your profile.</span>
+      </a>
+
+      <a class="quick-link" href="/internships">
+        <strong>Explore All Internships →</strong>
+        <span>Browse opportunities and filter by location.</span>
+      </a>
+    </section>
+
+    <div class="logout-row">
+      <a href="/logout">Log out of your account</a>
+    </div>
+
+  </main>
+
+  <footer>
+    Smart Internship Finder · Find opportunities. Build your future.
+  </footer>
+
 </body>
 </html>

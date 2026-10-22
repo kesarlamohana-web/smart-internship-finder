@@ -1,23 +1,377 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | Smart Internship Finder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f5f0;
+      color: #17243b;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1050px;
+      min-height: 640px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(23, 36, 59, 0.12);
+    }
+
+    .welcome-panel {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(211,177,112,.22), transparent 32%),
+        linear-gradient(145deg, #17243b, #233957 65%, #304762);
+    }
+
+    .brand {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .brand span {
+      color: #e1c18a;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      margin-bottom: 18px;
+      color: #e1c18a;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+
+    .welcome-content h1 {
+      margin-bottom: 20px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(36px, 4vw, 49px);
+      font-weight: 600;
+      line-height: 1.18;
+    }
+
+    .welcome-content p {
+      max-width: 340px;
+      color: #d5dce7;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .decorative-line {
+      width: 64px;
+      height: 3px;
+      margin-top: 28px;
+      border-radius: 4px;
+      background: #d8b777;
+    }
+
+    .panel-footer {
+      position: relative;
+      z-index: 1;
+      color: #bdc9d8;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .circle {
+      position: absolute;
+      right: -100px;
+      bottom: 80px;
+      width: 250px;
+      height: 250px;
+      border: 1px solid rgba(225,193,138,.22);
+      border-radius: 50%;
+    }
+
+    .circle::after {
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(225,193,138,.18);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .form-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px;
+    }
+
+    .form-panel h2 {
+      margin-bottom: 10px;
+      color: #17243b;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 35px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-bottom: 28px;
+      color: #778195;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      color: #344158;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #dfe3e9;
+      border-radius: 10px;
+      outline: none;
+      background: #fbfcfe;
+      color: #17243b;
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .field input:focus {
+      border-color: #b9975b;
+      box-shadow: 0 0 0 4px rgba(185,151,91,.13);
+    }
+
+    .field input::placeholder {
+      color: #a0a8b6;
+    }
+
+    .register-button {
+      width: 100%;
+      margin-top: 6px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #17243b;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    .register-button:hover {
+      transform: translateY(-1px);
+      background: #304762;
+    }
+
+    .error-message {
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      border: 1px solid #f4ceca;
+      border-radius: 9px;
+      background: #fff0ef;
+      color: #b42318;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .login-link {
+      margin-top: 24px;
+      color: #778195;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .login-link a {
+      color: #9b773e;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .security-note {
+      margin-top: 24px;
+      color: #929baa;
+      font-size: 11px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 16px;
+      }
+
+      .page {
+        max-width: 460px;
+        grid-template-columns: 1fr;
+      }
+
+      .welcome-panel {
+        min-height: 250px;
+        padding: 30px;
+      }
+
+      .welcome-content {
+        margin-top: 35px;
+      }
+
+      .welcome-content h1 {
+        font-size: 35px;
+      }
+
+      .panel-footer {
+        margin-top: 28px;
+      }
+
+      .form-panel {
+        padding: 35px 28px;
+      }
+
+      .form-panel h2 {
+        font-size: 30px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h2>Register</h2>
+  <main class="page">
 
-  {% if error %}
-    <p style="color:red">{{ error }}</p>
-  {% endif %}
+    <section class="welcome-panel">
+      <div class="brand">Smart<span>.</span> Internship Finder</div>
 
-  <form method="POST">
-    <input type="text" name="name" placeholder="Full Name" required><br><br>
-    <input type="email" name="email" placeholder="Email" required><br><br>
-    <input type="password" name="password" placeholder="Password" required><br><br>
-    <input type="text" name="branch" placeholder="Branch (e.g. CSE)" required><br><br>
-    <button type="submit">Register</button>
-  </form>
+      <div class="welcome-content">
+        <div class="eyebrow">Start your journey</div>
+        <h1>Make your ambitions happen.</h1>
+        <p>
+          Create your account, discover opportunities,
+          and take the first step towards building
+          your professional future.
+        </p>
+        <div class="decorative-line"></div>
+      </div>
 
-  <p>Already have an account? <a href="/login">Login</a></p>
+      <div class="panel-footer">
+        New opportunities. New skills. A brighter future.
+      </div>
+
+      <div class="circle" aria-hidden="true"></div>
+    </section>
+
+    <section class="form-panel">
+      <h2>Create account</h2>
+      <p class="subtitle">
+        Join us and discover opportunities made for you.
+      </p>
+
+      {% if error %}
+        <p class="error-message">{{ error }}</p>
+      {% endif %}
+
+      <form method="POST">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="branch">Branch</label>
+          <input
+            type="text"
+            id="branch"
+            name="branch"
+            placeholder="e.g. CSE, CSM, ECE"
+            required
+          >
+        </div>
+
+        <button class="register-button" type="submit">
+          Create my account →
+        </button>
+      </form>
+
+      <p class="login-link">
+        Already have an account?
+        <a href="/login">Sign in</a>
+      </p>
+
+      <p class="security-note">
+        Smart Internship Finder · Your next chapter begins here.
+      </p>
+    </section>
+
+  </main>
 </body>
 </html>

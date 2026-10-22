@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In | Smart Internship Finder</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #f8f6f0;
+            font-family: 'DM Sans', sans-serif;
+            color: #263746;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 35px;
+            background: white;
+            border: 1px solid #e7e5de;
+            border-radius: 15px;
+            box-shadow: 0 12px 35px rgba(20, 43, 59, 0.08);
+        }
+
+        .brand {
+            text-align: center;
+            color: #142b3b;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand span {
+            color: #c8a66a;
+        }
+
+        .icon {
+            margin: 25px auto 15px;
+            width: 60px;
+            height: 60px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #f4ead5;
+            color: #8a682c;
+            font-size: 27px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            text-align: center;
+            font: 600 30px 'Playfair Display', serif;
+            color: #142b3b;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7b8790;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 17px 0 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #dcdedb;
+            border-radius: 7px;
+            font: inherit;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: 2px solid #c8a66a;
+            border-color: transparent;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            border-radius: 7px;
+            background: #142b3b;
+            color: white;
+            font: 600 14px 'DM Sans', sans-serif;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #203f52;
+        }
+
+        .error {
+            padding: 12px;
+            border-radius: 7px;
+            background: #fff0ee;
+            color: #a32c20;
+            font-size: 13px;
+        }
+
+        .back {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #52616b;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #8a682c;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-card">
+        <div class="brand">Smart <span>Internship</span> Finder</div>
+        <div class="icon">♙</div>
+
+        <h1>Admin Sign In</h1>
+        <p class="subtitle">
+            Sign in to manage internship opportunities.
+        </p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('admin_login') }}">
+            <label for="email">Admin Email</label>
+            <input type="email" id="email" name="email"
+                   placeholder="Enter your admin email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"
+                   placeholder="Enter your password" required>
+
+            <button type="submit">Sign In as Admin</button>
+        </form>
+
+        <a class="back" href="{{ url_for('login') }}">
+            ← Back to Student Sign In
+        </a>
+    </main>
+</body>
+</html>
